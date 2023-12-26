@@ -1,0 +1,66 @@
+<main id="admin-product">
+  {{#if products}}
+    <div class="grid">
+      {{#each products}}
+        <article class="card product-item">
+          <header class="card__header">
+            <h1 class="product__title">
+              {{this.dataValues.title}}
+            </h1>
+          </header>
+          <div class="card__image">
+            <img
+              src="{{this.dataValues.imageUrl}}"
+              alt="{{this.dataValues.title}}"
+            />
+          </div>
+          <div class="card__content">
+            <h2 class="product__price">${{this.dataValues.price}}
+            </h2>
+            <p class="product__description">
+              {{this.dataValues.description}}
+            </p>
+          </div>
+          <div class="card__actions">
+            <a
+              data-id="{{this.dataValues.id}}"
+              data-title="{{this.dataValues.title}}"
+              data-price="{{this.dataValues.price}}"
+              data-description="{{this.dataValues.description}}"
+              href=""
+              class="btn editBtn"
+            >Edit</a>
+            <input type="hidden" value="<%= product.id %>" name="productId" />
+            <input type="hidden" name="token" value="<%= Token %>" />
+            <button class="btn deleteBtn" type="button" data-id="{{this.dataValues.id}}" >Delete</button>
+          </div>
+        </article>
+      {{/each}}
+    </div>
+  {{else}}
+    <h1>No Products Found!</h1>
+  {{/if}}
+
+
+  <script> 
+    $(document).ready(function () {
+      const cartItem = JSON.parse(localStorage.getItem("cart")) || [];
+
+      if (cartItem.length > 0) {
+        $.ajax({
+          url: "/add-cart",
+          type: "POST",
+          data: {cartItem},
+          success: function (response) {
+            if (response.success) {
+              localStorage.removeItem("cart");
+            }
+          },
+          error: function (error) {
+            console.error("Error getting fetch cart in DB!", error);
+          },
+        });
+      }
+    })
+  </script>
+</main>

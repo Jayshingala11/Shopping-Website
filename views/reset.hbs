@@ -1,0 +1,38 @@
+<main>
+  <form class="login-form" action="" method="">
+    <div class="form-control">
+      <label for="email">E-mail</label>
+      <input type="email" name="email" id="email" />
+    </div>
+    <input type="hidden" name="token" value="" />
+    <button class="btn" type="submit">Reset Password</button>
+  </form>
+
+
+  <script>
+    $(document).ready(function () {
+        $('.login-form').on('submit', function(event) {
+            event.preventDefault();
+            const email = $('#email').val();
+
+            $.ajax({
+                url: '/auth/reset',
+                type: 'POST',
+                data: { email },
+                success: function (response) {
+                    if (response.success) {
+                      const token = response.token;
+                      document.cookie = `Token=${token}; secure; HttpOnly SameSite=Strict`;
+                      window.location.href = `/auth/getnew-password`;
+                    } else {
+                      alert(response.error);
+                    }
+                },
+                error: function (error) {
+                    console.error("Error getting reset password page!", error);
+                }
+            })
+        })
+    })
+  </script>
+</main>
